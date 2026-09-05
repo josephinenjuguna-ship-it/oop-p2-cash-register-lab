@@ -17,9 +17,11 @@ class CashRegister:
     else:
       print("Not valid discount")
 
-  def add_item(self, item, price, quantity):
+  def add_item(self, item, price, quantity=1):
     self.total += price * quantity
-    self.items.append(item)
+
+    for _ in range(quantity):
+      self.items.append(item)
 
     transaction ={
       "item": item,
@@ -29,21 +31,22 @@ class CashRegister:
     self.previous_transactions.append(transaction)
 
   def apply_discount(self):
-    if not self.previous_transactions:
+    if self.discount ==0:
       print("There is no discount to apply.")
       return
 
     self.total -= self.total * (self.discount / 100)
-    last_transaction = self.previous_transactions.pop()
-    self.items.pop()
+    print(f"After the discount, the total comes to ${self.total:g}.")
 
   def void_last_transaction(self):
-    if not self.previous_transactions:
+     if not self.previous_transactions:
       return
 
-    last_transaction = self.previous_transactions.pop()
-    cost = last_transaction["price"] * last_transaction["quantity"]
-    self.total -= cost
-    self.items.pop()
+     last_transaction = self.previous_transactions.pop()
+     cost = last_transaction["price"] * last_transaction["quantity"]
+     self.total -= cost
+
+     for _ in range(last_transaction["quantity"]):
+      self.items.pop()
 
  
